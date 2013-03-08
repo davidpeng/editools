@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("EdiTools")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(".NET library for parsing EDI, converting EDI to XML, and writing out EDI.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("David Peng")]
 [assembly: AssemblyProduct("EdiTools")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
