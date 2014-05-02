@@ -107,6 +107,12 @@ namespace EdiTools
             int lastElementIndex = GetLastElementIndex();
             for (int i = 0; i <= lastElementIndex; i++)
             {
+                if (Id.Equals("UNA", StringComparison.OrdinalIgnoreCase))
+                {
+                    edi.Append(Elements[i].Value);
+                    continue;
+                }
+
                 edi.Append(options != null && options.ElementSeparator.HasValue
                                ? options.ElementSeparator
                                : EdiOptions.DefaultElementSeparator);
