@@ -458,6 +458,20 @@ namespace EdiTools
         }
 
         /// <summary>
+        /// Serialize this EdiDocument to a file, overwriting an existing file, if it exists.
+        /// </summary>
+        /// <param name="fileName">A string that contains the name of the file.</param>
+        /// <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        public void Save(string fileName, bool append, System.Text.Encoding encoding)
+        {
+            using (var writer = new StreamWriter(fileName, append, encoding))
+            {
+                Save(writer);
+            }
+        }
+
+        /// <summary>
         /// Serialize this EdiDocument to a TextWriter.
         /// </summary>
         /// <param name="writer">A TextWriter that the EdiDocument will be written to.</param>
