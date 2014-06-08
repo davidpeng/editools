@@ -110,10 +110,8 @@ namespace EdiTools
                     segment.Elements.Add(null);
                 if (segment.Elements[elementIndex] != null)
                 {
-                    Errors.Add(
-                        string.Format(
-                            "Element '{0}' occupies a position in the segment already taken by element '{1}'.",
-                            element.Name.LocalName, segment.Elements[elementIndex].Id));
+                    Errors.Add(string.Format("Element '{0}' occupies a position in the segment already taken by element '{1}'.",
+                        element.Name.LocalName, segment.Elements[elementIndex].Id));
                     continue;
                 }
                 segment.Elements[elementIndex] = ReadElement(element);
@@ -156,10 +154,8 @@ namespace EdiTools
                     element.Components.Add(null);
                 if (element.Components[componentIndex] != null)
                 {
-                    Errors.Add(
-                        string.Format(
-                            "Component '{0}' occupies a position in the element already taken by component '{1}'.",
-                            xmlElement.Name.LocalName, element.Components[componentIndex].Id));
+                    Errors.Add(string.Format("Component '{0}' occupies a position in the element already taken by component '{1}'.",
+                        xmlElement.Name.LocalName, element.Components[componentIndex].Id));
                     continue;
                 }
                 element.Components[componentIndex] = ReadComponent(xmlElement);
@@ -267,10 +263,8 @@ namespace EdiTools
 
         private bool SegmentWasUnvisitedInOuterLoops(EdiSegment segment, MapState mapState)
         {
-            return
-                mapState.LoopStates.Any(
-                    state =>
-                    !state.VisitedSegmentIds.Contains(segment.Id) && state.Loop.FindMatchingNode(segment) != null);
+            return mapState.LoopStates.Any(state => !state.VisitedSegmentIds.Contains(segment.Id) &&
+                                                    state.Loop.FindMatchingNode(segment) != null);
         }
 
         private XElement MapSegment(EdiSegment segment, Segment mapping)
@@ -631,8 +625,7 @@ namespace EdiTools
             public bool IsMatch(EdiSegment segment)
             {
                 return Id.Equals(segment.Id, StringComparison.OrdinalIgnoreCase) &&
-                       !segment.Elements.Where(
-                           (t, i) => Elements.Count > i && Elements[i] != null && !Elements[i].IsMatch(t)).Any();
+                       !segment.Elements.Where((t, i) => Elements.Count > i && Elements[i] != null && !Elements[i].IsMatch(t)).Any();
             }
         }
 

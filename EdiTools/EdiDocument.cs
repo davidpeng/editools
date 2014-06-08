@@ -262,9 +262,7 @@ namespace EdiTools
         private EdiElement ParseElement(string rawElement, EdiOptions options)
         {
             var element = new EdiElement();
-            string[] repetitions = options.RepetitionSeparator.HasValue
-                                       ? rawElement.Split(options.RepetitionSeparator.Value)
-                                       : new[] {rawElement};
+            string[] repetitions = options.RepetitionSeparator.HasValue ? rawElement.Split(options.RepetitionSeparator.Value) : new[] {rawElement};
             foreach (string rawRepetition in repetitions)
             {
                 if (rawRepetition != string.Empty)
@@ -276,9 +274,7 @@ namespace EdiTools
         private EdiRepetition ParseRepetition(string rawRepetition, EdiOptions options)
         {
             var repetition = new EdiRepetition();
-            string[] components = options.ComponentSeparator.HasValue
-                                      ? rawRepetition.Split(options.ComponentSeparator.Value)
-                                      : new[] {rawRepetition};
+            string[] components = options.ComponentSeparator.HasValue ? rawRepetition.Split(options.ComponentSeparator.Value) : new[] {rawRepetition};
             foreach (string rawComponent in components)
                 repetition.Components.Add(rawComponent != string.Empty ? new EdiComponent(rawComponent) : null);
             return repetition;

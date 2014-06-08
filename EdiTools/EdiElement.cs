@@ -117,9 +117,7 @@ namespace EdiTools
             for (int i = 0; i < Repetitions.Count; i++)
             {
                 if (i > 0)
-                    edi.Append(options != null && options.RepetitionSeparator.HasValue
-                                   ? options.RepetitionSeparator.Value
-                                   : EdiOptions.DefaultRepetitionSeparator);
+                    edi.Append(options != null && options.RepetitionSeparator.HasValue ? options.RepetitionSeparator.Value : EdiOptions.DefaultRepetitionSeparator);
                 edi.Append(Repetitions[i].ToString(options));
             }
             return edi.ToString();

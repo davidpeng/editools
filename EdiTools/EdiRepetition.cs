@@ -105,9 +105,7 @@ namespace EdiTools
             for (int i = 0; i <= lastComponentIndex; i++)
             {
                 if (i > 0)
-                    edi.Append(options != null && options.ComponentSeparator.HasValue
-                                   ? options.ComponentSeparator.Value
-                                   : EdiOptions.DefaultComponentSeparator);
+                    edi.Append(options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator.Value : EdiOptions.DefaultComponentSeparator);
                 if (Components[i] == null)
                     continue;
                 edi.Append(Components[i].ToString(options));

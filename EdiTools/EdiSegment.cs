@@ -113,18 +113,12 @@ namespace EdiTools
                     continue;
                 }
 
-                edi.Append(options != null && options.ElementSeparator.HasValue
-                               ? options.ElementSeparator
-                               : EdiOptions.DefaultElementSeparator);
+                edi.Append(options != null && options.ElementSeparator.HasValue ? options.ElementSeparator : EdiOptions.DefaultElementSeparator);
                 if (Elements[i] == null)
                     continue;
                 if (Id.Equals("ISA", StringComparison.OrdinalIgnoreCase) &&
                     Elements[i].Value.Length == 1 &&
-                    (i == 15 &&
-                     Elements[i].Value[0] ==
-                     (options != null && options.ComponentSeparator.HasValue
-                          ? options.ComponentSeparator.Value
-                          : EdiOptions.DefaultComponentSeparator) ||
+                    (i == 15 && Elements[i].Value[0] == (options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator.Value : EdiOptions.DefaultComponentSeparator) ||
                      i == 10 && options != null && Elements[i].Value[0] == options.RepetitionSeparator) &&
                     Elements[i].Repetitions.Count == 1 &&
                     Elements[i].Components.Count == 1)
@@ -134,9 +128,7 @@ namespace EdiTools
                 else
                     edi.Append(Elements[i].ToString(options));
             }
-            edi.Append(options != null && options.SegmentTerminator.HasValue
-                           ? options.SegmentTerminator
-                           : EdiOptions.DefaultSegmentTerminator);
+            edi.Append(options != null && options.SegmentTerminator.HasValue ? options.SegmentTerminator : EdiOptions.DefaultSegmentTerminator);
             return edi.ToString();
         }
 
