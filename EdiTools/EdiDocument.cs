@@ -366,7 +366,14 @@ namespace EdiTools
                     return EdiValue.Time(length, time);
                 case "r":
                     decimal real;
-                    return decimal.TryParse(xml.Value, out real) ? EdiValue.Real(real) : xml.Value;
+                    if (decimal.TryParse(xml.Value, out real))
+                    {
+                        string edi = EdiValue.Real(real);
+                        if (Options.DecimalIndicator.HasValue)
+                            edi = edi.Replace('.', Options.DecimalIndicator.Value);
+                        return edi;
+                    }
+                    return xml.Value;
                 default:
                     if (type == null || type.Length != 2 || type[0] != 'n' || !char.IsDigit(type[1]))
                         return xml.Value;
