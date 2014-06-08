@@ -13,7 +13,6 @@
         /// <summary>
         /// The default element separator to use when saving EDI documents where one is not specified.
         /// </summary>
-        /// 
         public static char DefaultElementSeparator = '*';
 
         /// <summary>
@@ -43,6 +42,8 @@
             ElementSeparator = source.ElementSeparator;
             ComponentSeparator = source.ComponentSeparator;
             RepetitionSeparator = source.RepetitionSeparator;
+            DecimalIndicator = source.DecimalIndicator;
+            ReleaseCharacter = source.ReleaseCharacter;
         }
 
         /// <summary>
@@ -64,5 +65,15 @@
         /// Gets or sets the repetition separator.
         /// </summary>
         public char? RepetitionSeparator { get; set; }
+
+        /// <summary>
+        /// Gets or sets the decimal indicator.
+        /// </summary>
+        public char? DecimalIndicator { get; set; }
+
+        /// <summary>
+        /// Gets or sets the release character.
+        /// </summary>
+        public char? ReleaseCharacter { get; set; }
     }
 }

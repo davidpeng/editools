@@ -257,5 +257,24 @@ namespace EdiTools.Tests
 
             Assert.AreEqual("ST*997^850>810*1234>>5678**123~", edi);
         }
+
+        [TestMethod]
+        public void ReadingEdifactSegments()
+        {
+            EdiDocument document = EdiDocument.Parse("UNA:+.? 'UNB+IATB:1+6XPPC+LHPPC+940101:0950+1'UNH+1+PAORES:93:1:IA'");
+
+            Assert.AreEqual(3, document.Segments.Count);
+            Assert.AreEqual("UNA", document.Segments[0].Id);
+            Assert.AreEqual(1, document.Segments[0].Elements.Count);
+            Assert.AreEqual(":+.? ", document.Segments[0].Elements[0].Value);
+            Assert.AreEqual("UNB", document.Segments[1].Id);
+            Assert.AreEqual(5, document.Segments[1].Elements.Count);
+            Assert.AreEqual(2, document.Segments[1].Elements[3].Components.Count);
+            Assert.AreEqual("940101", document.Segments[1].Elements[3].Components[0].Value);
+            Assert.AreEqual("0950", document.Segments[1].Elements[3].Components[1].Value);
+            Assert.AreEqual("UNH", document.Segments[2].Id);
+            Assert.AreEqual(2, document.Segments[2].Elements.Count);
+            Assert.AreEqual("1", document.Segments[2].Elements[0].Value);
+        }
     }
 }

@@ -42,34 +42,47 @@ namespace EdiTools
             string[] rawSegments = edi.Split(options.SegmentTerminator.Value);
             for (int i = 0; i < rawSegments.Length; i++)
             {
-                if (i == rawSegments.Length - 1 && (rawSegments[i] == null || rawSegments[i].Trim() == string.Empty))
+                string rawSegment = rawSegments[i];
+                if (i == rawSegments.Length - 1 && (rawSegment == null || rawSegment.Trim() == string.Empty))
                     break;
-                string[] rawElements = rawSegments[i].TrimStart().Split(options.ElementSeparator.Value);
-                var segment = new EdiSegment(rawElements[0]);
-                for (int j = 1; j < rawElements.Length; j++)
+                EdiSegment segment = null;
+                if (rawSegment.StartsWith("UNA", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (segment.Id.Equals("ISA", StringComparison.OrdinalIgnoreCase))
+                    segment = new EdiSegment(rawSegment.Substring(0, 3));
+                    segment.Elements.Add(new EdiElement(rawSegment.Substring(3, 5)));
+                    options.ComponentSeparator = rawSegment[3];
+                    options.DecimalIndicator = rawSegment[5];
+                    options.ReleaseCharacter = rawSegment[6] != ' ' ? rawSegment[6] : (char?)null;
+                }
+                else
+                {
+                    string[] rawElements = rawSegment.TrimStart().Split(options.ElementSeparator.Value);
+                    segment = new EdiSegment(rawElements[0]);
+                    for (int j = 1; j < rawElements.Length; j++)
                     {
-                        if (j == 16)
+                        if (segment.Id.Equals("ISA", StringComparison.OrdinalIgnoreCase))
                         {
-                            options.ComponentSeparator = rawElements[j][0];
-                            segment.Elements.Add(new EdiElement(rawElements[j]));
-                            continue;
-                        }
-
-                        if (j == 11)
-                        {
-                            if (string.CompareOrdinal(rawElements[12], "00402") >= 0 &&
-                                !char.IsLetterOrDigit(rawElements[j][0]))
+                            if (j == 16)
                             {
-                                options.RepetitionSeparator = rawElements[j][0];
+                                options.ComponentSeparator = rawElements[j][0];
                                 segment.Elements.Add(new EdiElement(rawElements[j]));
                                 continue;
                             }
-                            options.RepetitionSeparator = null;
+
+                            if (j == 11)
+                            {
+                                if (string.CompareOrdinal(rawElements[12], "00402") >= 0 &&
+                                    !char.IsLetterOrDigit(rawElements[j][0]))
+                                {
+                                    options.RepetitionSeparator = rawElements[j][0];
+                                    segment.Elements.Add(new EdiElement(rawElements[j]));
+                                    continue;
+                                }
+                                options.RepetitionSeparator = null;
+                            }
                         }
+                        segment.Elements.Add(rawElements[j] != string.Empty ? ParseElement(rawElements[j], options) : null);
                     }
-                    segment.Elements.Add(rawElements[j] != string.Empty ? ParseElement(rawElements[j], options) : null);
                 }
                 Segments.Add(segment);
             }
@@ -243,6 +256,8 @@ namespace EdiTools
 
         private char GuessElementSeparator(string edi)
         {
+            if (edi.StartsWith("UNA", StringComparison.OrdinalIgnoreCase))
+                return edi[4];
             Match match = Regex.Match(edi, "[^A-Z0-9]", RegexOptions.IgnoreCase);
             if (!match.Success)
                 throw new Exception("Could not guess the element separator.");
@@ -253,6 +268,8 @@ namespace EdiTools
         {
             if (edi.StartsWith("ISA", StringComparison.OrdinalIgnoreCase))
                 return edi[105];
+            if (edi.StartsWith("UNA", StringComparison.OrdinalIgnoreCase))
+                return edi[8];
             Match match = Regex.Match(edi, @"([\x00-\x1f~])\s*$");
             if (!match.Success)
                 throw new Exception("Could not guess the segment terminator.");
