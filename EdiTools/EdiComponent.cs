@@ -43,13 +43,23 @@ namespace EdiTools
         /// <returns>A string containing the EDI.</returns>
         public string ToString(EdiOptions options)
         {
-            if (_value.IndexOf(options != null && options.SegmentTerminator.HasValue ? options.SegmentTerminator.Value : EdiOptions.DefaultSegmentTerminator) != -1)
+            char segmentTerminator = options != null && options.SegmentTerminator.HasValue ? options.SegmentTerminator.Value : EdiOptions.DefaultSegmentTerminator;
+            char elementSeparator = options != null && options.ElementSeparator.HasValue ? options.ElementSeparator.Value : EdiOptions.DefaultElementSeparator;
+            char componentSeparator = options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator.Value : EdiOptions.DefaultComponentSeparator;
+            if (options != null && options.ReleaseCharacter.HasValue)
+            {
+                return _value.Replace(options.ReleaseCharacter.ToString(), options.ReleaseCharacter.ToString() + options.ReleaseCharacter.ToString())
+                             .Replace(segmentTerminator.ToString(), options.ReleaseCharacter.ToString() + segmentTerminator)
+                             .Replace(elementSeparator.ToString(), options.ReleaseCharacter.ToString() + elementSeparator)
+                             .Replace(componentSeparator.ToString(), options.ReleaseCharacter.ToString() + componentSeparator);
+            }
+            if (_value.IndexOf(segmentTerminator) != -1)
                 throw new FormatException(string.Format("'{0}' contains the segment terminator.", _value));
-            if (_value.IndexOf(options != null && options.ElementSeparator.HasValue ? options.ElementSeparator.Value : EdiOptions.DefaultElementSeparator) != -1)
+            if (_value.IndexOf(elementSeparator) != -1)
                 throw new FormatException(string.Format("'{0}' contains the element separator.", _value));
             if (options != null && options.RepetitionSeparator.HasValue && _value.IndexOf(options.RepetitionSeparator.Value) != -1)
                 throw new FormatException(string.Format("'{0}' contains the repetition separator.", _value));
-            if (_value.IndexOf(options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator.Value : EdiOptions.DefaultComponentSeparator) != -1)
+            if (_value.IndexOf(componentSeparator) != -1)
                 throw new FormatException(string.Format("'{0}' contains the component separator.", _value));
             return _value;
         }

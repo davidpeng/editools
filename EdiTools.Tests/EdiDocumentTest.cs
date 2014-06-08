@@ -276,5 +276,16 @@ namespace EdiTools.Tests
             Assert.AreEqual(2, document.Segments[2].Elements.Count);
             Assert.AreEqual("1", document.Segments[2].Elements[0].Value);
         }
+
+        [TestMethod]
+        public void ReadingSegmentsWithReleaseCharacters()
+        {
+            EdiDocument document = EdiDocument.Parse("UNA:+.? 'UNB+??IATB?:1?+6XPPC+LHPPC+940101:0950+1?'UNH+1+PAORES:93:1:IA'");
+
+            Assert.AreEqual(2, document.Segments.Count);
+            Assert.AreEqual("UNB", document.Segments[1].Id);
+            Assert.AreEqual(6, document.Segments[1].Elements.Count);
+            Assert.AreEqual("?IATB:1+6XPPC", document.Segments[1].Elements[0].Value);
+        }
     }
 }

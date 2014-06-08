@@ -29,5 +29,19 @@ namespace EdiTools.Tests
             var options = new EdiOptions {ComponentSeparator = '>'};
             Assert.AreEqual("a>b", component.ToString(options));
         }
+
+        [TestMethod]
+        public void StringifyingAComponentContainerSeparatorsWithAReleaseCharacter()
+        {
+            var component = new EdiComponent(":+.? '");
+            var options = new EdiOptions
+            {
+                ComponentSeparator = ':',
+                ElementSeparator = '+',
+                ReleaseCharacter = '?',
+                SegmentTerminator = '\''
+            };
+            Assert.AreEqual("?:?+.?? ?'", component.ToString(options));
+        }
     }
 }

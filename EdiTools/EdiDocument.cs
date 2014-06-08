@@ -37,9 +37,11 @@ namespace EdiTools
                 options.SegmentTerminator = GuessSegmentTerminator(edi);
             if (!options.ElementSeparator.HasValue)
                 options.ElementSeparator = GuessElementSeparator(edi);
+            if (!options.ReleaseCharacter.HasValue)
+                options.ReleaseCharacter = GuessReleaseCharacter(edi);
 
             Segments = new List<EdiSegment>();
-            string[] rawSegments = edi.Split(options.SegmentTerminator.Value);
+            string[] rawSegments = SplitEdi(edi, options.SegmentTerminator.Value, options.ReleaseCharacter);
             for (int i = 0; i < rawSegments.Length; i++)
             {
                 string rawSegment = rawSegments[i];
@@ -52,11 +54,10 @@ namespace EdiTools
                     segment.Elements.Add(new EdiElement(rawSegment.Substring(3, 5)));
                     options.ComponentSeparator = rawSegment[3];
                     options.DecimalIndicator = rawSegment[5];
-                    options.ReleaseCharacter = rawSegment[6] != ' ' ? rawSegment[6] : (char?)null;
                 }
                 else
                 {
-                    string[] rawElements = rawSegment.TrimStart().Split(options.ElementSeparator.Value);
+                    string[] rawElements = SplitEdi(rawSegment.TrimStart(), options.ElementSeparator.Value, options.ReleaseCharacter);
                     segment = new EdiSegment(rawElements[0]);
                     for (int j = 1; j < rawElements.Length; j++)
                     {
@@ -276,10 +277,17 @@ namespace EdiTools
             return match.Groups[1].Value[0];
         }
 
+        private char? GuessReleaseCharacter(string edi)
+        {
+            if (edi.StartsWith("UNA", StringComparison.OrdinalIgnoreCase) && edi[6] != ' ')
+                return edi[6];
+            return null;
+        }
+
         private EdiElement ParseElement(string rawElement, EdiOptions options)
         {
             var element = new EdiElement();
-            string[] repetitions = options.RepetitionSeparator.HasValue ? rawElement.Split(options.RepetitionSeparator.Value) : new[] {rawElement};
+            string[] repetitions = options.RepetitionSeparator.HasValue ? SplitEdi(rawElement, options.RepetitionSeparator.Value, options.ReleaseCharacter) : new[] {rawElement};
             foreach (string rawRepetition in repetitions)
             {
                 if (rawRepetition != string.Empty)
@@ -291,10 +299,27 @@ namespace EdiTools
         private EdiRepetition ParseRepetition(string rawRepetition, EdiOptions options)
         {
             var repetition = new EdiRepetition();
-            string[] components = options.ComponentSeparator.HasValue ? rawRepetition.Split(options.ComponentSeparator.Value) : new[] {rawRepetition};
+            string[] components = options.ComponentSeparator.HasValue ? SplitEdi(rawRepetition, options.ComponentSeparator.Value, options.ReleaseCharacter) : new[] {rawRepetition};
             foreach (string rawComponent in components)
-                repetition.Components.Add(rawComponent != string.Empty ? new EdiComponent(rawComponent) : null);
+            {
+                if (rawComponent != string.Empty)
+                    repetition.Components.Add(new EdiComponent(options.ReleaseCharacter.HasValue ? UnescapeEdi(rawComponent, options.ReleaseCharacter.Value) : rawComponent));
+                else
+                    repetition.Components.Add(null);
+            }
             return repetition;
+        }
+
+        private string[] SplitEdi(string edi, char separator, char? releaseCharacter)
+        {
+            if (releaseCharacter.HasValue)
+                return Regex.Split(edi, "(?<!" + Regex.Escape(releaseCharacter.ToString()) + ")" + Regex.Escape(separator.ToString()));
+            return edi.Split(separator);
+        }
+
+        private string UnescapeEdi(string edi, char releaseCharacter)
+        {
+            return Regex.Replace(edi, Regex.Escape(releaseCharacter.ToString()) + "(.)", "$1");
         }
 
         private void LoadLoop(XElement loop)
