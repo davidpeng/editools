@@ -43,6 +43,7 @@ namespace EdiTools.Tests
             Assert.AreEqual(1.23m, new EdiElement("1.23").RealValue);
             Assert.AreEqual(0.123m, new EdiElement(".123").RealValue);
             Assert.AreEqual(-0.123m, new EdiElement("-.123").RealValue);
+            Assert.AreEqual(1.23m, new EdiElement("1,23").RealValue);
         }
 
         [TestMethod]

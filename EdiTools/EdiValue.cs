@@ -59,7 +59,7 @@ namespace EdiTools
         {
             get
             {
-                string stripped = Regex.Replace(Value, "[^-0-9.]", string.Empty);
+                string stripped = Regex.Replace(Value, "[^-0-9.]", ".");
                 return decimal.Parse(stripped);
             }
         }
