@@ -202,27 +202,27 @@ namespace EdiTools.Tests
 
             Assert.AreEqual(4, transactionSets.Count);
 
-            Assert.AreEqual("000000001", transactionSets[0].Isa[13]);
-            Assert.AreEqual("1", transactionSets[0].Gs[8]);
+            Assert.AreEqual("000000001", transactionSets[0].InterchangeHeader[13]);
+            Assert.AreEqual("1", transactionSets[0].FunctionalGroupHeader[8]);
             Assert.AreEqual(3, transactionSets[0].Segments.Count);
             Assert.AreEqual("0001", transactionSets[0].Segments[0][02]);
             Assert.AreEqual("AK1", transactionSets[0].Segments[1].Id);
             Assert.AreEqual("SE", transactionSets[0].Segments[2].Id);
 
-            Assert.IsNull(transactionSets[1].Isa);
-            Assert.IsNull(transactionSets[1].Gs);
+            Assert.IsNull(transactionSets[1].InterchangeHeader);
+            Assert.IsNull(transactionSets[1].FunctionalGroupHeader);
             Assert.AreEqual(2, transactionSets[1].Segments.Count);
             Assert.AreEqual("0002", transactionSets[1].Segments[0][02]);
             Assert.AreEqual("SE", transactionSets[1].Segments[1].Id);
 
-            Assert.AreEqual("000000002", transactionSets[2].Isa[13]);
-            Assert.AreEqual("2", transactionSets[2].Gs[8]);
+            Assert.AreEqual("000000002", transactionSets[2].InterchangeHeader[13]);
+            Assert.AreEqual("2", transactionSets[2].FunctionalGroupHeader[8]);
             Assert.AreEqual(2, transactionSets[2].Segments.Count);
             Assert.AreEqual("0003", transactionSets[2].Segments[0][02]);
             Assert.AreEqual("AK3", transactionSets[2].Segments[1].Id);
 
-            Assert.AreEqual("000000002", transactionSets[3].Isa[13]);
-            Assert.AreEqual("2", transactionSets[3].Gs[8]);
+            Assert.AreEqual("000000002", transactionSets[3].InterchangeHeader[13]);
+            Assert.AreEqual("2", transactionSets[3].FunctionalGroupHeader[8]);
             Assert.AreEqual(3, transactionSets[3].Segments.Count);
             Assert.AreEqual("0004", transactionSets[3].Segments[0][02]);
             Assert.AreEqual("GE", transactionSets[3].Segments[1].Id);

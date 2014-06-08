@@ -10,24 +10,24 @@ namespace EdiTools
         /// <summary>
         /// Initializes a new instance of the EdiTransactionSet class.
         /// </summary>
-        /// <param name="isa">The ISA segment associated with this transaction set.</param>
-        /// <param name="gs">The GS segment associated with this transaction set.</param>
-        public EdiTransactionSet(EdiSegment isa, EdiSegment gs)
+        /// <param name="interchangeHeader">The interchange header segment associated with this transaction set.</param>
+        /// <param name="functionalGroupHeader">The functional group header segment associated with this transaction set.</param>
+        public EdiTransactionSet(EdiSegment interchangeHeader, EdiSegment functionalGroupHeader)
         {
-            Isa = isa;
-            Gs = gs;
+            InterchangeHeader = interchangeHeader;
+            FunctionalGroupHeader = functionalGroupHeader;
             Segments = new List<EdiSegment>();
         }
 
         /// <summary>
-        /// Gets the ISA segment associated with this transaction set.
+        /// Gets the interchange header segment associated with this transaction set.
         /// </summary>
-        public EdiSegment Isa { get; private set; }
+        public EdiSegment InterchangeHeader { get; private set; }
 
         /// <summary>
-        /// Gets the GS segment associated with this transaction set.
+        /// Gets the functional group header segment associated with this transaction set.
         /// </summary>
-        public EdiSegment Gs { get; private set; }
+        public EdiSegment FunctionalGroupHeader { get; private set; }
 
         /// <summary>
         /// Gets a list of segments belonging to this transaction set.
