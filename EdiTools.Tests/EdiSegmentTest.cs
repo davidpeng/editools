@@ -22,15 +22,6 @@ namespace EdiTools.Tests
         }
 
         [TestMethod]
-        public void CreatingAUNASegment()
-        {
-            var seg = new EdiSegment("UNA");
-            seg[01] = ":+.? ";
-
-            Assert.AreEqual("UNA:+.? ’", seg.ToString(new EdiOptions { SegmentTerminator = '’' }));
-        }
-
-        [TestMethod]
         public void UpdatingElements()
         {
             var seg = new EdiSegment("SEG");
@@ -71,6 +62,21 @@ namespace EdiTools.Tests
             var options = new EdiOptions {SegmentTerminator = '~'};
 
             Assert.AreEqual("SEG**1234**5678~", segment.ToString(options));
+        }
+
+        [TestMethod]
+        public void ConvertingAUnaSegmentToAString()
+        {
+            var segment = new EdiSegment("UNA");
+            var options = new EdiOptions
+            {
+                ComponentSeparator = ':',
+                ElementSeparator = '+',
+                ReleaseCharacter = '?',
+                SegmentTerminator = '\''
+            };
+
+            Assert.AreEqual("UNA:+.? '", segment.ToString(options));
         }
     }
 }

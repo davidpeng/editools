@@ -104,29 +104,34 @@ namespace EdiTools
         public string ToString(EdiOptions options)
         {
             var edi = new StringBuilder(Id);
-            int lastElementIndex = GetLastElementIndex();
-            for (int i = 0; i <= lastElementIndex; i++)
+            if (Id.Equals("UNA", StringComparison.OrdinalIgnoreCase))
             {
-                if (Id.Equals("UNA", StringComparison.OrdinalIgnoreCase))
+                edi.Append(options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator : EdiOptions.DefaultComponentSeparator)
+                   .Append(options != null && options.ElementSeparator.HasValue ? options.ElementSeparator : EdiOptions.DefaultElementSeparator)
+                   .Append(options != null && options.DecimalIndicator.HasValue ? options.DecimalIndicator : '.')
+                   .Append(options != null && options.ReleaseCharacter.HasValue ? options.ReleaseCharacter : ' ')
+                   .Append(' ');
+            }
+            else
+            {
+                int lastElementIndex = GetLastElementIndex();
+                for (int i = 0; i <= lastElementIndex; i++)
                 {
-                    edi.Append(Elements[i].Value);
-                    continue;
+                    edi.Append(options != null && options.ElementSeparator.HasValue ? options.ElementSeparator : EdiOptions.DefaultElementSeparator);
+                    if (Elements[i] == null)
+                        continue;
+                    if (Id.Equals("ISA", StringComparison.OrdinalIgnoreCase) &&
+                        Elements[i].Value.Length == 1 &&
+                        (i == 15 && Elements[i].Value[0] == (options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator.Value : EdiOptions.DefaultComponentSeparator) ||
+                         i == 10 && options != null && Elements[i].Value[0] == options.RepetitionSeparator) &&
+                        Elements[i].Repetitions.Count == 1 &&
+                        Elements[i].Components.Count == 1)
+                    {
+                        edi.Append(Elements[i].Value);
+                    }
+                    else
+                        edi.Append(Elements[i].ToString(options));
                 }
-
-                edi.Append(options != null && options.ElementSeparator.HasValue ? options.ElementSeparator : EdiOptions.DefaultElementSeparator);
-                if (Elements[i] == null)
-                    continue;
-                if (Id.Equals("ISA", StringComparison.OrdinalIgnoreCase) &&
-                    Elements[i].Value.Length == 1 &&
-                    (i == 15 && Elements[i].Value[0] == (options != null && options.ComponentSeparator.HasValue ? options.ComponentSeparator.Value : EdiOptions.DefaultComponentSeparator) ||
-                     i == 10 && options != null && Elements[i].Value[0] == options.RepetitionSeparator) &&
-                    Elements[i].Repetitions.Count == 1 &&
-                    Elements[i].Components.Count == 1)
-                {
-                    edi.Append(Elements[i].Value);
-                }
-                else
-                    edi.Append(Elements[i].ToString(options));
             }
             edi.Append(options != null && options.SegmentTerminator.HasValue ? options.SegmentTerminator : EdiOptions.DefaultSegmentTerminator);
             return edi.ToString();
