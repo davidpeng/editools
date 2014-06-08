@@ -21,8 +21,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void MappingOneSegmentWithBlankMapping()
         {
-            EdiDocument edi = EdiDocument.Parse("ST*997^850>810*1234>>5678**123~",
-                                                new EdiOptions {RepetitionSeparator = '^', ComponentSeparator = '>'});
+            EdiDocument edi = EdiDocument.Parse("ST*997^850>810*1234>>5678**123~", new EdiOptions {RepetitionSeparator = '^', ComponentSeparator = '>'});
             EdiMapping mapping = EdiMapping.Parse("<mapping/>");
             XDocument actual = mapping.Map(edi.Segments);
 
@@ -48,21 +47,17 @@ namespace EdiTools.Tests
         [TestMethod]
         public void MappingAnExpectedSegment()
         {
-            EdiDocument edi = EdiDocument.Parse("ST*997^850>810*1234>>5678**123~",
-                                                new EdiOptions {RepetitionSeparator = '^', ComponentSeparator = '>'});
+            EdiDocument edi = EdiDocument.Parse("ST*997^850>810*1234>>5678**123~", new EdiOptions {RepetitionSeparator = '^', ComponentSeparator = '>'});
             EdiMapping mapping = EdiMapping.Parse(new StringBuilder()
                                                       .AppendLine("<mapping>")
                                                       .AppendLine("    <st>")
                                                       .AppendLine("        <st01 type=\"n1\">")
-                                                      .AppendLine(
-                                                          "            <option definition=\"purchase order\">850</option>")
-                                                      .AppendLine(
-                                                          "            <option definition=\"acknowledgment\">997</option>")
+                                                      .AppendLine("            <option definition=\"purchase order\">850</option>")
+                                                      .AppendLine("            <option definition=\"acknowledgment\">997</option>")
                                                       .AppendLine("        </st01>")
                                                       .AppendLine("        <st02 type=\"n2\">")
                                                       .AppendLine("            <st0201 type=\"n3\">")
-                                                      .AppendLine(
-                                                          "                <option definition=\"def\">1234</option>")
+                                                      .AppendLine("                <option definition=\"def\">1234</option>")
                                                       .AppendLine("            </st0201>")
                                                       .AppendLine("        </st02>")
                                                       .AppendLine("    </st>")
@@ -73,15 +68,13 @@ namespace EdiTools.Tests
             XDocument expected = XDocument.Parse(new StringBuilder()
                                                      .AppendLine("<mapping>")
                                                      .AppendLine("    <st>")
-                                                     .AppendLine(
-                                                         "        <st01 type=\"n1\" definition=\"acknowledgment\">99.7</st01>")
+                                                     .AppendLine("        <st01 type=\"n1\" definition=\"acknowledgment\">99.7</st01>")
                                                      .AppendLine("        <st01>")
                                                      .AppendLine("            <st0101>850</st0101>")
                                                      .AppendLine("            <st0102>810</st0102>")
                                                      .AppendLine("        </st01>")
                                                      .AppendLine("        <st02>")
-                                                     .AppendLine(
-                                                         "            <st0201 type=\"n3\" definition=\"def\">1.234</st0201>")
+                                                     .AppendLine("            <st0201 type=\"n3\" definition=\"def\">1.234</st0201>")
                                                      .AppendLine("            <st0203>5678</st0203>")
                                                      .AppendLine("        </st02>")
                                                      .AppendLine("        <st04>123</st04>")

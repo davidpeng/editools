@@ -51,9 +51,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void GuessingSeparators()
         {
-            EdiDocument document =
-                EdiDocument.Parse(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~IEA*0*000000001~");
+            EdiDocument document = EdiDocument.Parse("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~IEA*0*000000001~");
 
             Assert.AreEqual(2, document.Segments.Count);
             Assert.AreEqual("ISA", document.Segments[0].Id);
@@ -70,8 +68,7 @@ namespace EdiTools.Tests
         public void IgnoringExtraWhiteSpace()
         {
             string edi = new StringBuilder()
-                .AppendLine(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~")
+                .AppendLine("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~")
                 .AppendLine("IEA*0*000000001~")
                 .ToString();
             EdiDocument document = EdiDocument.Parse(edi);
@@ -90,9 +87,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void ReadingComponents()
         {
-            EdiDocument document =
-                EdiDocument.Parse(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~SEG*COMPONENT1>COMPONENT2*COMPONENT3>COMPONENT4>COMPONENT5~");
+            EdiDocument document = EdiDocument.Parse("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~SEG*COMPONENT1>COMPONENT2*COMPONENT3>COMPONENT4>COMPONENT5~");
 
             Assert.AreEqual(2, document.Segments[1].Elements.Count);
             Assert.AreEqual(2, document.Segments[1].Elements[0].Components.Count);
@@ -107,9 +102,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void ReadingRepetitions()
         {
-            EdiDocument document =
-                EdiDocument.Parse(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~SEG*REPETITION1^COMPONENT1>COMPONENT2~");
+            EdiDocument document = EdiDocument.Parse("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~SEG*REPETITION1^COMPONENT1>COMPONENT2~");
 
             Assert.AreEqual(1, document.Segments[1].Elements.Count);
             Assert.AreEqual(2, document.Segments[1].Elements[0].Repetitions.Count);
@@ -122,9 +115,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void IgnoringRepetitionSeparatorWhenLessThanVersion4020()
         {
-            EdiDocument document =
-                EdiDocument.Parse(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00401*000000001*0*P*>~SEG*REPETITION1^COMPONENT1>COMPONENT2~");
+            EdiDocument document = EdiDocument.Parse("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00401*000000001*0*P*>~SEG*REPETITION1^COMPONENT1>COMPONENT2~");
 
             Assert.AreEqual(1, document.Segments[1].Elements.Count);
             Assert.AreEqual(2, document.Segments[1].Elements[0].Components.Count);
@@ -135,9 +126,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void IgnoringAlphaNumericRepetitionSeparator()
         {
-            EdiDocument document =
-                EdiDocument.Parse(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00402*000000001*0*P*>~SEG*VALUE1>VALUE2~");
+            EdiDocument document = EdiDocument.Parse("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00402*000000001*0*P*>~SEG*VALUE1>VALUE2~");
 
             Assert.AreEqual(1, document.Segments[1].Elements.Count);
             Assert.AreEqual(2, document.Segments[1].Elements[0].Components.Count);
@@ -148,8 +137,7 @@ namespace EdiTools.Tests
         [TestMethod]
         public void Saving()
         {
-            const string edi =
-                "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~SEG*REPETITION1^COMPONENT1>COMPONENT2~";
+            const string edi = "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~SEG*REPETITION1^COMPONENT1>COMPONENT2~";
             EdiDocument document = EdiDocument.Parse(edi);
             var buffer = new StringWriter();
             document.Save(buffer);
@@ -161,11 +149,9 @@ namespace EdiTools.Tests
         public void DetectingRepetitionAndComponentSeparatorsWhenSaving()
         {
             string edi = new StringBuilder()
-                .Append(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~")
+                .Append("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~")
                 .Append("SEG*REPETITION1^COMPONENT1>COMPONENT2~")
-                .Append(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*|*00402*000000001*0*P*<~")
+                .Append("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*|*00402*000000001*0*P*<~")
                 .Append("SEG*REPETITION1|COMPONENT1<COMPONENT2~")
                 .ToString();
             EdiDocument document = EdiDocument.Parse(edi);
@@ -192,8 +178,7 @@ namespace EdiTools.Tests
         public void GettingTransactionSets()
         {
             string edi = new StringBuilder()
-                .AppendLine(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~")
+                .AppendLine("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000001*0*P*>~")
                 .AppendLine("GS********1~")
                 .AppendLine("ST**0001~")
                 .AppendLine("AK1~")
@@ -203,8 +188,7 @@ namespace EdiTools.Tests
                 .AppendLine("IEA~")
                 .AppendLine("ST**0002~")
                 .AppendLine("SE~")
-                .AppendLine(
-                    "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000002*0*P*>~")
+                .AppendLine("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*U*00401*000000002*0*P*>~")
                 .AppendLine("GS********2~")
                 .AppendLine("AK2~")
                 .AppendLine("ST**0003~")
@@ -251,15 +235,13 @@ namespace EdiTools.Tests
             XDocument xml = XDocument.Parse(new StringBuilder()
                                                 .AppendLine("<mapping>")
                                                 .AppendLine("    <st>")
-                                                .AppendLine(
-                                                    "        <st01 type=\"n1\" definition=\"acknowledgment\">99.7</st01>")
+                                                .AppendLine("        <st01 type=\"n1\" definition=\"acknowledgment\">99.7</st01>")
                                                 .AppendLine("        <st01>")
                                                 .AppendLine("            <st0101>850</st0101>")
                                                 .AppendLine("            <st0102>810</st0102>")
                                                 .AppendLine("        </st01>")
                                                 .AppendLine("        <st02>")
-                                                .AppendLine(
-                                                    "            <st0201 type=\"n3\" definition=\"def\">1.234</st0201>")
+                                                .AppendLine("            <st0201 type=\"n3\" definition=\"def\">1.234</st0201>")
                                                 .AppendLine("            <st0203>5678</st0203>")
                                                 .AppendLine("        </st02>")
                                                 .AppendLine("        <st04>123</st04>")
