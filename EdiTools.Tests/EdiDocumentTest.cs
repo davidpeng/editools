@@ -287,5 +287,43 @@ namespace EdiTools.Tests
             Assert.AreEqual(6, document.Segments[1].Elements.Count);
             Assert.AreEqual("?IATB:1+6XPPC", document.Segments[1].Elements[0].Value);
         }
+
+        [TestMethod]
+        public void GettingEdifactTransactionSets()
+        {
+            string edi = new StringBuilder()
+                .AppendLine("UNA:+.? '")
+                .AppendLine("UNB+1'")
+                .AppendLine("UNH+2'")
+                .AppendLine("MSG'")
+                .AppendLine("IFT'")
+                .AppendLine("UNT'")
+                .AppendLine("UNZ'")
+                .AppendLine("UNB+3'")
+                .AppendLine("UNG+4'")
+                .AppendLine("UNH+5'")
+                .AppendLine("UNT'")
+                .AppendLine("UNE'")
+                .AppendLine("UNZ'")
+                .ToString();
+            EdiDocument document = EdiDocument.Parse(edi);
+            IList<EdiTransactionSet> transactionSets = document.TransactionSets;
+
+            Assert.AreEqual(2, transactionSets.Count);
+
+            Assert.AreEqual("1", transactionSets[0].InterchangeHeader[01]);
+            Assert.IsNull(transactionSets[0].FunctionalGroupHeader);
+            Assert.AreEqual(4, transactionSets[0].Segments.Count);
+            Assert.AreEqual("2", transactionSets[0].Segments[0][01]);
+            Assert.AreEqual("MSG", transactionSets[0].Segments[1].Id);
+            Assert.AreEqual("IFT", transactionSets[0].Segments[2].Id);
+            Assert.AreEqual("UNT", transactionSets[0].Segments[3].Id);
+
+            Assert.AreEqual("3", transactionSets[1].InterchangeHeader[01]);
+            Assert.AreEqual("4", transactionSets[1].FunctionalGroupHeader[01]);
+            Assert.AreEqual(2, transactionSets[1].Segments.Count);
+            Assert.AreEqual("5", transactionSets[1].Segments[0][01]);
+            Assert.AreEqual("UNT", transactionSets[1].Segments[1].Id);
+        }
     }
 }

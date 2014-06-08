@@ -115,34 +115,42 @@ namespace EdiTools
             {
                 var transactionSets = new List<EdiTransactionSet>();
                 EdiTransactionSet transactionSet = null;
-                EdiSegment isa = null;
-                EdiSegment gs = null;
+                EdiSegment interchangeHeader = null;
+                EdiSegment functionalGroupHeader = null;
                 foreach (EdiSegment segment in Segments)
                 {
                     switch (segment.Id.ToUpper())
                     {
                         case "ISA":
-                            isa = segment;
+                        case "UNB":
+                            interchangeHeader = segment;
                             break;
                         case "GS":
-                            gs = segment;
+                        case "UNG":
+                            functionalGroupHeader = segment;
                             break;
                         case "ST":
-                            transactionSet = new EdiTransactionSet(isa, gs);
+                        case "UNH":
+                            transactionSet = new EdiTransactionSet(interchangeHeader, functionalGroupHeader);
                             transactionSets.Add(transactionSet);
                             break;
                         case "GE":
-                            gs = null;
+                        case "UNE":
+                            functionalGroupHeader = null;
                             break;
                         case "IEA":
-                            isa = null;
+                        case "UNZ":
+                            interchangeHeader = null;
                             break;
                     }
                     if (transactionSet == null)
                         continue;
                     transactionSet.Segments.Add(segment);
-                    if (segment.Id.Equals("SE", StringComparison.OrdinalIgnoreCase))
+                    if (segment.Id.Equals("SE", StringComparison.OrdinalIgnoreCase) ||
+                        segment.Id.Equals("UNT", StringComparison.OrdinalIgnoreCase))
+                    {
                         transactionSet = null;
+                    }
                 }
                 return transactionSets;
             }
