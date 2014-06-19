@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>EdiTools</id>
+    <version>1.0.1</version>
+    <title />
+    <authors>David Peng</authors>
+    <owners />
+    <projectUrl>http://z10.us/editools</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET library for parsing EDI, converting EDI to XML, and writing out EDI.</description>
+  </metadata>
+</package>
