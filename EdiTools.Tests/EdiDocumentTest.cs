@@ -162,6 +162,17 @@ namespace EdiTools.Tests
         }
 
         [TestMethod]
+        public void IgnoringAlphaNumericRepetitionSeparatorWhenSaving()
+        {
+            const string edi = "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER_WITH_U*120101*0000*U*00402*000000001*0*P*>~";
+            EdiDocument document = EdiDocument.Parse(edi);
+            var buffer = new StringWriter();
+            document.Save(buffer);
+
+            Assert.AreEqual(edi, buffer.ToString());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof (FormatException))]
         public void SavingAValueContainingASeparator()
         {

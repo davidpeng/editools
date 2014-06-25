@@ -468,7 +468,7 @@ namespace EdiTools
             {
                 if (segment.Id.Equals("ISA", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (segment[11] != null && string.CompareOrdinal(segment[12], "00402") >= 0)
+                    if (segment[11] != null && string.CompareOrdinal(segment[12], "00402") >= 0 && !char.IsLetterOrDigit(segment[11][0]))
                         options.RepetitionSeparator = segment[11][0];
                     else
                         options.RepetitionSeparator = null;
