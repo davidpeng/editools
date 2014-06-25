@@ -44,6 +44,7 @@
             RepetitionSeparator = source.RepetitionSeparator;
             DecimalIndicator = source.DecimalIndicator;
             ReleaseCharacter = source.ReleaseCharacter;
+            AddLineBreaks = source.AddLineBreaks;
         }
 
         /// <summary>
@@ -52,7 +53,7 @@
         public char? SegmentTerminator { get; set; }
 
         /// <summary>
-        /// Gets or sets the element separator;
+        /// Gets or sets the element separator.
         /// </summary>
         public char? ElementSeparator { get; set; }
 
@@ -75,5 +76,10 @@
         /// Gets or sets the release character.
         /// </summary>
         public char? ReleaseCharacter { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to add line breaks when saving a document.
+        /// </summary>
+        public bool AddLineBreaks { get; set; }
     }
 }

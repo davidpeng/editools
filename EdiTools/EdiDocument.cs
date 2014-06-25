@@ -476,6 +476,8 @@ namespace EdiTools
                         options.ComponentSeparator = segment[16][0];
                 }
                 writer.Write(segment.ToString(options));
+                if (options.AddLineBreaks)
+                    writer.WriteLine();
             }
             writer.Flush();
         }

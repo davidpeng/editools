@@ -186,6 +186,21 @@ namespace EdiTools.Tests
         }
 
         [TestMethod]
+        public void SavingWithLineBreaks()
+        {
+            string edi = new StringBuilder()
+                .AppendLine("ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *120101*0000*^*00402*000000001*0*P*>~")
+                .AppendLine("SEG*REPETITION1^COMPONENT1>COMPONENT2~")
+                .ToString();
+            EdiDocument document = EdiDocument.Parse(edi);
+            document.Options.AddLineBreaks = true;
+            var buffer = new StringWriter();
+            document.Save(buffer);
+
+            Assert.AreEqual(edi, buffer.ToString());
+        }
+
+        [TestMethod]
         public void GettingTransactionSets()
         {
             string edi = new StringBuilder()
