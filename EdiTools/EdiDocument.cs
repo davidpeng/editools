@@ -180,6 +180,19 @@ namespace EdiTools
         }
 
         /// <summary>
+        /// Creates a new EdiDocument from a file, optionally specifying separator characters.
+        /// </summary>
+        /// <param name="fileName">A file name that references the file to load into a new EdiDocument.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="options">An EdiOptions containing separator characters to use when saving this document.</param>
+        /// <returns>An EdiDocument that contains the contents of the specified file.</returns>
+        public static EdiDocument Load(string fileName, System.Text.Encoding encoding, EdiOptions options = null)
+        {
+            string edi = File.ReadAllText(fileName, encoding);
+            return new EdiDocument(edi, options);
+        }
+
+        /// <summary>
         /// Creates a new EdiDocument from a TextReader, optionally specifying separator characters.
         /// </summary>
         /// <param name="reader">A TextReader that contains the content for the EdiDocument.</param>
