@@ -5,8 +5,6 @@ EdiTools is a .NET library used to parse EDI, convert EDI into XML, and write ou
 
 You can install it as a [NuGet package](http://nuget.org/packages/EdiTools/).
 
-If you're looking for binaries, you can find them [here](http://z10.us/editools).
-
 Loading EDI
 -----------
 
