@@ -59,7 +59,8 @@ namespace EdiTools
         {
             get
             {
-                string stripped = Regex.Replace(Value, "[^-0-9.]", ".");
+                string decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                string stripped = Regex.Replace(Value, "[^-0-9" + Regex.Escape(decimalSeparator) + "]", decimalSeparator);
                 return decimal.Parse(stripped);
             }
         }
@@ -139,7 +140,7 @@ namespace EdiTools
         /// <returns>A string containing an EDI-formatted numeric.</returns>
         public static string Numeric(int decimals, decimal value)
         {
-            string formatted = Math.Abs(value).ToString("f" + decimals).Replace(".", string.Empty).TrimStart('0');
+            string formatted = Math.Abs(value).ToString("f" + decimals, CultureInfo.InvariantCulture).Replace(".", string.Empty).TrimStart('0');
             if (formatted == string.Empty)
                 return "0";
             if (value < 0)
@@ -170,7 +171,8 @@ namespace EdiTools
             string stripped = Regex.Replace(Value, "[^-0-9]", string.Empty);
             string paddedToDecimals = stripped.PadLeft(decimals + 1, '0');
             int decimalIndex = paddedToDecimals.Length - decimals;
-            string withDecimal = paddedToDecimals.Substring(0, decimalIndex) + "." +
+            string withDecimal = paddedToDecimals.Substring(0, decimalIndex) +
+                                 CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator +
                                  paddedToDecimals.Substring(decimalIndex);
             return decimal.Parse(withDecimal);
         }

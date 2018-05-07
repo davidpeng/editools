@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EdiTools.Tests
@@ -6,6 +8,17 @@ namespace EdiTools.Tests
     [TestClass]
     public class EdiValueTest
     {
+        [ClassInitialize]
+        public static void SetUp(TestContext context)
+        {
+            SetCulture("en");
+        }
+
+        private static void SetCulture(String culture)
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
+        }
+
         [TestMethod]
         public void GettingTheDateValueOfAnElement()
         {
@@ -34,8 +47,35 @@ namespace EdiTools.Tests
         }
 
         [TestMethod]
+        public void GettingTheNumericValueOfAnElementInNonEnCulture()
+        {
+            SetCulture("fr");
+            Assert.AreEqual(123, new EdiElement("123").NumericValue(0));
+            Assert.AreEqual(-123, new EdiElement("-123").NumericValue(0));
+            Assert.AreEqual(12.3m, new EdiElement("123").NumericValue(1));
+            Assert.AreEqual(-12.3m, new EdiElement("-123").NumericValue(1));
+            Assert.AreEqual(1.23m, new EdiElement("123").NumericValue(2));
+            Assert.AreEqual(0.123m, new EdiElement("123").NumericValue(3));
+            Assert.AreEqual(-0.123m, new EdiElement("-123").NumericValue(3));
+        }
+
+        [TestMethod]
         public void GettingTheRealValueOfAnElement()
         {
+            Assert.AreEqual(123, new EdiElement("123").RealValue);
+            Assert.AreEqual(-123, new EdiElement("-123").RealValue);
+            Assert.AreEqual(12.3m, new EdiElement("12.3").RealValue);
+            Assert.AreEqual(-12.3m, new EdiElement("-12.3").RealValue);
+            Assert.AreEqual(1.23m, new EdiElement("1.23").RealValue);
+            Assert.AreEqual(0.123m, new EdiElement(".123").RealValue);
+            Assert.AreEqual(-0.123m, new EdiElement("-.123").RealValue);
+            Assert.AreEqual(1.23m, new EdiElement("1,23").RealValue);
+        }
+
+        [TestMethod]
+        public void GettingTheRealValueOfAnElementInNonEnCulture()
+        {
+            SetCulture("fr");
             Assert.AreEqual(123, new EdiElement("123").RealValue);
             Assert.AreEqual(-123, new EdiElement("-123").RealValue);
             Assert.AreEqual(12.3m, new EdiElement("12.3").RealValue);
@@ -81,6 +121,25 @@ namespace EdiTools.Tests
         [TestMethod]
         public void FormattingANumeric()
         {
+            Assert.AreEqual("123", EdiValue.Numeric(0, 123));
+            Assert.AreEqual("-123", EdiValue.Numeric(0, -123));
+            Assert.AreEqual("1230", EdiValue.Numeric(1, 123));
+            Assert.AreEqual("-1230", EdiValue.Numeric(1, -123));
+            Assert.AreEqual("123", EdiValue.Numeric(1, 12.3m));
+            Assert.AreEqual("-123", EdiValue.Numeric(1, -12.3m));
+            Assert.AreEqual("1230", EdiValue.Numeric(2, 12.3m));
+            Assert.AreEqual("-1230", EdiValue.Numeric(2, -12.3m));
+            Assert.AreEqual("12", EdiValue.Numeric(0, 12.3m));
+            Assert.AreEqual("-12", EdiValue.Numeric(0, -12.3m));
+            Assert.AreEqual("0", EdiValue.Numeric(2, 0));
+            Assert.AreEqual("1", EdiValue.Numeric(2, 0.01m));
+            Assert.AreEqual("-1", EdiValue.Numeric(2, -0.01m));
+        }
+
+        [TestMethod]
+        public void FormattingANumericInNonEnCulture()
+        {
+            SetCulture("fr");
             Assert.AreEqual("123", EdiValue.Numeric(0, 123));
             Assert.AreEqual("-123", EdiValue.Numeric(0, -123));
             Assert.AreEqual("1230", EdiValue.Numeric(1, 123));
