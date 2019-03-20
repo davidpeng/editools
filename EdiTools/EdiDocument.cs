@@ -180,6 +180,19 @@ namespace EdiTools
         }
 
         /// <summary>
+        /// Creates a new EdiDocument from a file, optionally specifying separator characters.
+        /// </summary>
+        /// <param name="fileName">A file name that references the file to load into a new EdiDocument.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="options">An EdiOptions containing separator characters to use when saving this document.</param>
+        /// <returns>An EdiDocument that contains the contents of the specified file.</returns>
+        public static EdiDocument Load(string fileName, System.Text.Encoding encoding, EdiOptions options = null)
+        {
+            string edi = File.ReadAllText(fileName, encoding);
+            return new EdiDocument(edi, options);
+        }
+
+        /// <summary>
         /// Creates a new EdiDocument from a TextReader, optionally specifying separator characters.
         /// </summary>
         /// <param name="reader">A TextReader that contains the content for the EdiDocument.</param>
@@ -452,6 +465,20 @@ namespace EdiTools
         public void Save(Stream stream)
         {
             using (var writer = new StreamWriter(stream))
+            {
+                Save(writer);
+            }
+        }
+
+        /// <summary>
+        /// Serialize this EdiDocument to a file, overwriting an existing file, if it exists.
+        /// </summary>
+        /// <param name="fileName">A string that contains the name of the file.</param>
+        /// <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        public void Save(string fileName, bool append, System.Text.Encoding encoding)
+        {
+            using (var writer = new StreamWriter(fileName, append, encoding))
             {
                 Save(writer);
             }
