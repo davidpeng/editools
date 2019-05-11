@@ -451,10 +451,9 @@ namespace EdiTools
         /// <param name="stream">The stream to output this EdiDocument to.</param>
         public void Save(Stream stream)
         {
-            using (var writer = new StreamWriter(stream))
-            {
-                Save(writer);
-            }
+            var writer = new StreamWriter(stream);
+            Save(writer);
+            writer.Flush();
         }
 
         /// <summary>

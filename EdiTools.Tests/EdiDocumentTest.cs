@@ -201,6 +201,15 @@ namespace EdiTools.Tests
         }
 
         [TestMethod]
+        public void SavingToAStreamLeavesTheStreamOpen()
+        {
+            var stream = new MemoryStream();
+            new EdiDocument().Save(stream);
+
+            Assert.IsTrue(stream.CanWrite);
+        }
+
+        [TestMethod]
         public void GettingTransactionSets()
         {
             string edi = new StringBuilder()
